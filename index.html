@@ -28,9 +28,10 @@ header .t{flex:1;min-width:240px}
 h1{margin:0;font-size:clamp(26px,3.4vw,38px);font-weight:800;line-height:1.1;letter-spacing:-.01em}
 h1 span{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
 header p{margin:6px 0 0;color:var(--muted);max-width:62ch}
-.boosty{display:inline-flex;align-items:center;gap:8px;padding:11px 18px;border-radius:999px;
-  border:1px solid #f15f2c;color:#ff8a5b;text-decoration:none;font-weight:600;white-space:nowrap}
+.boosty{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:12px;padding:11px 18px;
+  border-radius:999px;border:1px solid #f15f2c;color:#ff8a5b;text-decoration:none;font-weight:600}
 .boosty:hover{background:#f15f2c;color:#fff}
+.boosty-note{margin:8px 0 0;text-align:center;color:var(--muted);font-size:13px}
 
 .grid{display:grid;grid-template-columns:370px 1fr;gap:20px;align-items:start}
 @media (max-width:900px){.grid{grid-template-columns:1fr}}
@@ -49,6 +50,18 @@ header p{margin:6px 0 0;color:var(--muted);max-width:62ch}
 .drop input{display:none}
 .drop small{display:block;color:var(--muted);font-size:12.5px;margin-top:2px}
 
+.slot{position:relative;margin-bottom:8px}
+.slot .drop{padding-left:46px;text-align:left}
+.slot .letter{position:absolute;left:12px;top:50%;transform:translateY(-50%);width:24px;height:24px;border-radius:6px;
+  display:grid;place-items:center;font-weight:800;font-size:13px;background:var(--panel2);border:1px solid var(--line);color:var(--violet)}
+.slot .rm{position:absolute;right:8px;top:8px;width:26px;height:26px;border-radius:50%;border:1px solid var(--line);
+  background:var(--panel2);cursor:pointer;line-height:1;font-size:16px;color:var(--muted)}
+.slot .rm:hover{color:#fff;border-color:var(--pink)}
+.swatch{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:3px;vertical-align:0}
+.add{width:100%;border:1px dashed var(--line);background:transparent;border-radius:10px;padding:9px;cursor:pointer;color:var(--violet);font-weight:600}
+.add:hover{border-color:var(--violet)}
+.hint{margin:2px 0 6px;color:var(--muted);font-size:12.5px}
+.num.wide{width:120px;text-align:left;letter-spacing:.08em}
 .tabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
 .tabs button{border:1px solid var(--line);background:var(--panel2);border-radius:8px;padding:6px 11px;cursor:pointer;font-size:14px}
 .tabs button[aria-pressed="true"]{background:var(--violet);border-color:var(--violet);color:#fff}
@@ -62,9 +75,9 @@ header p{margin:6px 0 0;color:var(--muted);max-width:62ch}
 .chk{display:flex;align-items:center;gap:9px;margin:7px 0;font-size:14px;cursor:pointer}
 .chk input{accent-color:var(--violet);width:17px;height:17px}
 
-.dl{display:flex;gap:8px}
-select{flex:1;background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:10px}
-.btn{border:0;border-radius:999px;padding:12px 20px;background:var(--grad);color:#fff;font-weight:600;cursor:pointer}
+.dl{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px}
+select{width:100%;min-width:0;background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:10px}
+.btn{border:0;border-radius:999px;padding:11px 22px;white-space:nowrap;background:var(--grad);color:#fff;font-weight:600;cursor:pointer}
 .btn:disabled{opacity:.4;cursor:not-allowed}
 
 .view{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;position:sticky;top:12px}
@@ -98,18 +111,20 @@ footer a{color:var(--violet)}
       <h1>Раскладка <span>по кривой</span></h1>
       <p>Загрузите мотив, выберите кривую и количество — инструмент расставит копии на равном расстоянии и отдаст готовый файл для вашей программы или машины.</p>
     </div>
-    <a class="boosty" href="https://boosty.to/embroiderydesign" target="_blank" rel="noopener">Поддержать на Boosty</a>
   </header>
 
   <div class="grid">
     <div>
       <div class="panel">
         <section class="step">
-          <h2><b>1</b>Мотив</h2>
-          <label class="drop" id="dropMotif">
-            <input type="file" id="fileMotif" accept=".pes,.dst,.exp,.jef,.vp3,.xxx,.hus,.sew,.pec,.u01,.tbf,.shv,.ksm,.dsz,.dsb,.emd,.exy,.phc,.phb,.stx,.zhs">
-            <span class="cap">Перетащите файл звезды, цветка, буквы…<small>PES, DST, EXP, JEF, VP3, XXX, HUS и др.</small></span>
-          </label>
+          <h2><b>1</b>Мотивы</h2>
+          <div id="motifs"></div>
+          <button class="add" id="addMotif" hidden>+ Добавить ещё мотив</button>
+          <div id="orderBox" hidden>
+            <div class="row" style="margin-top:12px"><label for="pattern">Порядок мотивов</label><input class="num wide" id="pattern" value="АБ" maxlength="40" autocomplete="off"></div>
+            <p class="hint">АБ — по очереди, ААБ — два первых и один второй, АБВ — три по кругу.</p>
+            <label class="chk"><input type="checkbox" id="group" checked>Вышивать по цветам (меньше смен ниток)</label>
+          </div>
         </section>
 
         <section class="step">
@@ -162,6 +177,8 @@ footer a{color:var(--violet)}
             </select>
             <button class="btn" id="save" disabled>Скачать</button>
           </div>
+          <a class="boosty" href="https://boosty.to/embroiderydesign/single-payment/donation/678989/target?share=target_link" target="_blank" rel="noopener">☕ Угостить автора кофе</a>
+          <p class="boosty-note">Инструмент бесплатный — если пригодился, буду рада поддержке</p>
         </section>
       </div>
       <div class="status" id="status"><span class="spin"></span>Загружаю инструмент…</div>
@@ -176,7 +193,7 @@ footer a{color:var(--violet)}
         <div><span>Длина кривой</span><b id="sLen">—</b></div>
         <div><span>Шаг</span><b id="sStep">—</b></div>
         <div><span>Размер дизайна</span><b id="sSize">—</b></div>
-        <div><span>Стежков</span><b id="sN">—</b></div>
+        <div><span>Стежков / смен ниток</span><b id="sN">—</b></div>
       </div>
     </div>
   </div>
@@ -191,8 +208,13 @@ footer a{color:var(--violet)}
 import pyembroidery as pe
 
 MM = 10.0
-STATE = {"motif": None, "curve": None, "result": None}
+MAXM = 4
+STATE = {"motifs": [None] * MAXM, "curve": None, "result": None}
 SIMPLE = {pe.STITCH: 0, pe.JUMP: 1, pe.TRIM: 2, pe.COLOR_CHANGE: 5, pe.STOP: 3}
+DEFAULT_COLORS = ["#2a8cff", "#e0479e", "#f2b632", "#36c48f"]
+LETTERS = {"А": 0, "Б": 1, "В": 2, "Г": 3, "A": 0, "B": 1, "C": 2, "D": 3,
+           "а": 0, "б": 1, "в": 2, "г": 3, "a": 0, "b": 1, "c": 2, "d": 3,
+           "1": 0, "2": 1, "3": 2, "4": 3}
 
 
 def _load(path):
@@ -202,12 +224,50 @@ def _load(path):
     return p
 
 
-def load_motif(path):
+def _segments(p, slot):
+    """Мотив -> список цветовых блоков [(thread, [(dx,dy,cmd)...])] относительно центра."""
+    x0, y0, x1, y1 = p.bounds()
+    cx, cy = (x0 + x1) / 2, (y0 + y1) / 2
+    threads = list(p.threadlist)
+    segs, cur, ti = [], [], 0
+
+    def thread(i):
+        if i < len(threads):
+            return threads[i]
+        t = pe.EmbThread()
+        t.set_hex_color(DEFAULT_COLORS[(slot + i) % len(DEFAULT_COLORS)])
+        return t
+
+    for x, y, cmd in p.stitches:
+        c = cmd & pe.COMMAND_MASK
+        if c == pe.END:
+            break
+        if c == pe.COLOR_CHANGE:
+            if cur:
+                segs.append((thread(ti), cur))
+            cur, ti = [], ti + 1
+            continue
+        if c in (pe.STITCH, pe.JUMP, pe.TRIM, pe.STOP):
+            cur.append((x - cx, y - cy, c))
+    if cur:
+        segs.append((thread(ti), cur))
+    return segs
+
+
+def load_motif(path, slot):
+    slot = int(slot)
     p = _load(path)
-    STATE["motif"] = p
+    segs = _segments(p, slot)
+    if not segs:
+        raise ValueError("В файле мотива нет стежков.")
+    STATE["motifs"][slot] = segs
     x0, y0, x1, y1 = p.bounds()
     return json.dumps({"w": round((x1 - x0) / MM, 1), "h": round((y1 - y0) / MM, 1),
-                       "n": len(p.stitches), "colors": max(1, len(p.threadlist))})
+                       "colors": len(segs), "hex": [s[0].hex_color() for s in segs]})
+
+
+def remove_motif(slot):
+    STATE["motifs"][int(slot)] = None
 
 
 def load_curve(path):
@@ -218,7 +278,7 @@ def load_curve(path):
             pts.append((x, y))
     if len(pts) < 2:
         raise ValueError("В файле кривой нет строчки. Прошейте кривую обычной строчкой (running stitch).")
-    STATE["curve"] = {"pts": pts, "closed": False, "pattern": p}
+    STATE["curve"] = {"pts": pts, "closed": False}
     return json.dumps({"length": round(_length(pts) / MM, 1)})
 
 
@@ -240,7 +300,7 @@ def preset_curve(kind, w, h):
         for i in range(N + 1):
             a = -math.pi / 2 + 2 * math.pi * i / N
             pts.append((w / 2 * math.cos(a), h / 2 * math.sin(a)))
-    STATE["curve"] = {"pts": pts, "closed": closed, "pattern": None}
+    STATE["curve"] = {"pts": pts, "closed": closed}
     return json.dumps({"length": round(_length(pts) / MM, 1)})
 
 
@@ -258,9 +318,16 @@ def _point(pts, cum, d):
     return pts[-1]
 
 
-def build(count, rotate, offset, start, end, reverse, keep_curve):
-    motif, cv = STATE["motif"], STATE["curve"]
-    if motif is None or cv is None:
+def _sequence(pattern):
+    loaded = [i for i, m in enumerate(STATE["motifs"]) if m is not None]
+    seq = [LETTERS[ch] for ch in str(pattern) if ch in LETTERS and STATE["motifs"][LETTERS[ch]] is not None]
+    return seq or loaded
+
+
+def build(count, rotate, offset, start, end, reverse, keep_curve, pattern, group):
+    cv = STATE["curve"]
+    seq = _sequence(pattern)
+    if not seq or cv is None:
         return json.dumps({"error": "need"})
     count, offset, start, end = max(1, int(count)), float(offset), float(start), float(end)
     pts = list(cv["pts"])
@@ -274,27 +341,11 @@ def build(count, rotate, offset, start, end, reverse, keep_curve):
     if b <= a:
         return json.dumps({"error": "Отступы больше длины кривой."})
     closed = cv["closed"] and start == 0 and end == 0
-
-    x0, y0, x1, y1 = motif.bounds()
-    cx, cy = (x0 + x1) / 2, (y0 + y1) / 2
-    out = pe.EmbPattern()
-    for t in motif.threadlist:
-        out.add_thread(t)
-
-    def add(x, y, c):
-        out.add_stitch_absolute(c, round(x), round(y))
-
-    if keep_curve:
-        for x, y in pts:
-            add(x, y, pe.STITCH)
-        add(pts[-1][0], pts[-1][1], pe.TRIM)
-
-    if closed:
-        step = (b - a) / count
-    else:
-        step = (b - a) / (count - 1) if count > 1 else 0.0
+    step = (b - a) / count if closed else ((b - a) / (count - 1) if count > 1 else 0.0)
     win = max(step / 4, 2 * MM)
 
+    # позиции на кривой
+    places = []
     for k in range(count):
         d = a + step * k if (count > 1 or closed) else (a + b) / 2
         px, py = _point(pts, cum, d)
@@ -304,39 +355,72 @@ def build(count, rotate, offset, start, end, reverse, keep_curve):
         if offset:
             px += math.sin(ang) * offset * MM
             py -= math.cos(ang) * offset * MM
-        rot = ang if rotate else 0.0
+        places.append((seq[k % len(seq)], px, py, ang if rotate else 0.0))
+
+    # порядок вышивания: (позиция, номер цветового блока или None = все блоки подряд)
+    if group:
+        jobs = []
+        for mi in sorted(set(p[0] for p in places)):
+            ks = [k for k in range(count) if places[k][0] == mi]
+            for si in range(len(STATE["motifs"][mi])):
+                jobs += [(k, si) for k in ks]
+    else:
+        jobs = [(k, None) for k in range(count)]
+
+    out = pe.EmbPattern()
+    cur_color = [None]
+    started = [False]
+
+    def add(x, y, c):
+        out.add_stitch_absolute(c, round(x), round(y))
+
+    def use_thread(t):
+        hx = t.hex_color()
+        if cur_color[0] is None:
+            out.add_thread(t)
+        elif hx != cur_color[0]:
+            out.add_command(pe.COLOR_CHANGE)
+            out.add_thread(t)
+        cur_color[0] = hx
+
+    if keep_curve:
+        k0, s0 = jobs[0]
+        use_thread(STATE["motifs"][places[k0][0]][s0 or 0][0])
+        for x, y in pts:
+            add(x, y, pe.STITCH)
+        add(pts[-1][0], pts[-1][1], pe.TRIM)
+        started[0] = True
+
+    for k, si in jobs:
+        mi, px, py, rot = places[k]
         cs, sn = math.cos(rot), math.sin(rot)
-        first = True
-        for x, y, cmd in motif.stitches:
-            c = cmd & pe.COMMAND_MASK
-            if c == pe.END:
-                break
-            dx, dy = x - cx, y - cy
-            nx, ny = px + dx * cs - dy * sn, py + dx * sn + dy * cs
-            if first:
-                if k > 0 or keep_curve:
-                    add(nx, ny, pe.TRIM)
-                add(nx, ny, pe.JUMP)
-                first = False
-            if c in SIMPLE:
+        segs = STATE["motifs"][mi]
+        for thread, sts in (segs if si is None else [segs[si]]):
+            use_thread(thread)
+            first = True
+            for dx, dy, c in sts:
+                nx, ny = px + dx * cs - dy * sn, py + dx * sn + dy * cs
+                if first:
+                    if started[0]:
+                        add(nx, ny, pe.TRIM)
+                    add(nx, ny, pe.JUMP)
+                    first = False
+                    started[0] = True
                 add(nx, ny, c)
     out.add_command(pe.END)
     STATE["result"] = out
 
     st = [[s[0], s[1], SIMPLE.get(s[2] & pe.COMMAND_MASK, 1)] for s in out.stitches
           if (s[2] & pe.COMMAND_MASK) in SIMPLE]
-    colors = []
-    for t in out.threadlist:
-        try:
-            colors.append(t.hex_color())
-        except Exception:
-            colors.append("#4fb3ff")
     rx0, ry0, rx1, ry1 = out.bounds()
-    return json.dumps({"stitches": st, "colors": colors,
+    letters = "АБВГ"
+    return json.dumps({"stitches": st, "colors": [t.hex_color() for t in out.threadlist],
                        "guide": [[round(x), round(y)] for x, y in pts[::max(1, len(pts) // 300)]],
                        "length": round(total / MM, 1), "step": round(step / MM, 1),
                        "w": round((rx1 - rx0) / MM, 1), "h": round((ry1 - ry0) / MM, 1),
-                       "count": count, "n": len(out.stitches)})
+                       "count": count, "n": len(out.stitches),
+                       "changes": max(0, len(out.threadlist) - 1),
+                       "seq": "".join(letters[i] for i in seq)})
 
 
 def save(ext):
@@ -349,7 +433,7 @@ def save(ext):
 <script>
 const $ = id => document.getElementById(id);
 const WHEEL = "pyembroidery-1.5.1-py2.py3-none-any.whl";
-let py = null, api = {}, lastCurveFile = null, motifOK = false, curveOK = false, curveKind = "file", last = null, timer = null;
+let py = null, api = {}, lastCurveFile = null, motifs = [null, null, null, null], patternEdited = false, curveOK = false, curveKind = "file", last = null, timer = null;
 
 function status(msg, err = false, busy = false) {
   const s = $("status");
@@ -365,7 +449,7 @@ async function init() {
     try { await micropip.install(new URL(WHEEL, location.href).href); }
     catch (e) { await micropip.install("pyembroidery"); }
     py.runPython($("pycore").textContent);
-    for (const f of ["load_motif", "load_curve", "preset_curve", "build", "save"]) api[f] = py.globals.get(f);
+    for (const f of ["load_motif", "remove_motif", "load_curve", "preset_curve", "build", "save"]) api[f] = py.globals.get(f);
     status("Готово. Загрузите мотив.");
   } catch (e) {
     console.error(e);
@@ -386,16 +470,56 @@ function setDrop(el, title, sub) {
   el.querySelector(".cap").innerHTML = `${title}<small>${sub}</small>`;
 }
 
-async function onMotif(file) {
+const LET = "АБВГ";
+const ACCEPT = $("fileCurve").getAttribute("accept");
+
+function renderSlots() {
+  const box = $("motifs");
+  box.innerHTML = "";
+  const shown = motifs.map((m, i) => (m || i === 0 || slotOpen[i]) ? i : -1).filter(i => i >= 0);
+  for (const i of shown) {
+    const m = motifs[i];
+    const wrap = document.createElement("div");
+    wrap.className = "slot";
+    wrap.innerHTML = `<label class="drop${m ? " ok" : ""}"><input type="file" accept="${ACCEPT}">
+      <span class="cap">${m ? `${esc(m.name)}<small>${m.hex.map(c => `<i class="swatch" style="background:${c}"></i>`).join("")} ${m.w} × ${m.h} мм, цветов: ${m.colors}</small>`
+        : (i === 0 ? "Перетащите файл звезды, цветка, буквы…<small>PES, DST, EXP, JEF, VP3, XXX, HUS и др.</small>" : "Второй мотив для чередования<small>Перетащите файл или нажмите</small>")}</span></label>
+      <span class="letter">${LET[i]}</span>` + ((m || i > 0) ? `<button class="rm" title="Убрать мотив" aria-label="Убрать мотив ${LET[i]}">×</button>` : "");
+    bindDrop(wrap.querySelector(".drop"), wrap.querySelector("input"), f => onMotif(f, i));
+    const rm = wrap.querySelector(".rm");
+    if (rm) rm.addEventListener("click", e => { e.preventDefault(); removeMotif(i); });
+    box.appendChild(wrap);
+  }
+  const loaded = motifs.filter(Boolean).length;
+  $("addMotif").hidden = !loaded || shown.length >= 4;
+  $("orderBox").hidden = loaded < 2;
+  if (!patternEdited) $("pattern").value = motifs.map((m, i) => m ? LET[i] : "").join("");
+}
+const slotOpen = [true, false, false, false];
+function esc(t) { return t.replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c])); }
+
+async function onMotif(file, slot) {
   if (!py) return status("Подождите, инструмент ещё загружается…", false, true);
   try {
-    const info = JSON.parse(api.load_motif(await readInto(file, "motif")));
-    motifOK = true;
-    setDrop($("dropMotif"), file.name, `${info.w} × ${info.h} мм, цветов: ${info.colors}`);
-    const ext = file.name.split(".").pop().toLowerCase();
-    if ([...$("fmt").options].some(o => o.value === ext)) $("fmt").value = ext;
+    const info = JSON.parse(api.load_motif(await readInto(file, "motif" + slot), slot));
+    motifs[slot] = { name: file.name, ...info };
+    slotOpen[slot] = true;
+    if (slot === 0) {
+      const ext = file.name.split(".").pop().toLowerCase();
+      if ([...$("fmt").options].some(o => o.value === ext)) $("fmt").value = ext;
+    }
+    renderSlots();
     rebuild();
   } catch (e) { status(pyErr(e), true); }
+}
+
+function removeMotif(i) {
+  if (py && motifs[i]) api.remove_motif(i);
+  motifs[i] = null;
+  slotOpen[i] = i === 0;
+  renderSlots();
+  if (!motifs.some(Boolean)) { last = null; draw(); $("empty").hidden = false; $("save").disabled = true; }
+  rebuild();
 }
 
 async function onCurve(file) {
@@ -424,21 +548,23 @@ function rebuild() {
   timer = setTimeout(() => {
     if (!py) return;
     if (curveKind !== "file") setPreset();
+    const motifOK = motifs.some(Boolean);
     if (!motifOK || !curveOK) {
       status(!motifOK ? "Загрузите мотив." : "Выберите кривую: файл или готовую форму.");
       return;
     }
     const r = JSON.parse(api.build(+$("count").value || 1, $("rotate").checked, +$("offset").value || 0,
-      +$("start").value || 0, +$("end").value || 0, $("reverse").checked, $("keep").checked));
+      +$("start").value || 0, +$("end").value || 0, $("reverse").checked, $("keep").checked,
+      motifs.filter(Boolean).length > 1 ? $("pattern").value : "", $("group").checked));
     if (r.error) { status(r.error, true); $("save").disabled = true; return; }
     last = r;
     $("sLen").textContent = r.length + " мм";
     $("sStep").textContent = r.step + " мм";
     $("sSize").textContent = `${r.w} × ${r.h} мм`;
-    $("sN").textContent = r.n.toLocaleString("ru-RU");
+    $("sN").textContent = r.n.toLocaleString("ru-RU") + " / " + r.changes;
     $("empty").hidden = true;
     $("save").disabled = false;
-    status(`${r.count} шт., шаг ${r.step} мм.`);
+    status(`${r.count} шт., шаг ${r.step} мм` + (motifs.filter(Boolean).length > 1 ? `, порядок ${r.seq}.` : "."));
     draw();
   }, 90);
 }
@@ -507,7 +633,10 @@ function bindDrop(el, input, fn) {
   ["dragleave", "drop"].forEach(t => el.addEventListener(t, e => { e.preventDefault(); el.classList.remove("over"); }));
   el.addEventListener("drop", e => e.dataTransfer.files[0] && fn(e.dataTransfer.files[0]));
 }
-bindDrop($("dropMotif"), $("fileMotif"), onMotif);
+$("addMotif").addEventListener("click", () => { const i = slotOpen.indexOf(false); if (i >= 0) { slotOpen[i] = true; renderSlots(); } });
+$("pattern").addEventListener("input", () => { patternEdited = $("pattern").value.trim() !== ""; rebuild(); });
+$("group").addEventListener("input", rebuild);
+renderSlots();
 bindDrop($("dropCurve"), $("fileCurve"), onCurve);
 
 $("curveTabs").addEventListener("click", e => {
